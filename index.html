@@ -10,7 +10,7 @@
     <!-- We link our html to the Bootstrap CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <link rel="stylesheet" href="Assets/style.css">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
     <div class="container">
 
         <!-- Jumbotron element -->
-        <div class="jumbotron">
+        <div class="jumbotron p-4 m-2">
 
             <!-- centered text -->
             <h1 class="text-center"><strong>Weather Dashboard</strong></h1>
@@ -30,27 +30,127 @@
         <div class="row">
 
             <!-- At large+ screens takes up half width (6/12) -->
-            <div class="col-lg-3">
-                <p>
-                    search
-                </p>
-                <p>
-                    search history
-                </p>
+            <div class="col-lg-4">
+                <div class="card  p-4 m-1">
+                    <div class="card-body">
+
+                        <div>
+                            <h5>Search for a city:</h5>
+                            <!-- The form -->
+                            <form class="searchCity" action="action_page.php">
+                                <input type="text" placeholder="City.." name="search">
+                                <button type="submit"><i class="fa fa-search"></i></button>
+                            </form>
+
+                        </div>
+                        <br>
+                        <div>
+                            <h5>Search History</h5>
+
+                            <div class="list-group">
+                                <button type="button" class="list-group-item list-group-item-action">
+                                    Cras justo odio
+                                </button>
+                                <button type="button" class="list-group-item list-group-item-action">Dapibus ac
+                                    facilisis in</button>
+                                <button type="button" class="list-group-item list-group-item-action">Morbi leo
+                                    risus</button>
+                                <button type="button" class="list-group-item list-group-item-action">Porta ac
+                                    consectetur ac</button>
+                                <button type="button" class="list-group-item list-group-item-action" disabled>Vestibulum
+                                    at eros</button>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- At large+ screens takes up half width (6/12) -->
-            <div class="col-lg-9">
-                <p>
-                    current condition
-                </p>
-                <p>
-                    5 day history
-                </p>
+            <div class="col-lg-8">
+                <div class="card  p-4 m-1">
+                    <div class="card-body">
+                        <div>
+                            <div class="city_dt"> </div>
+                            <div class="temperature"></div>
+                            <div class="humidity"></div>
+                            <div class="wind_speed"></div>
+                            <div class="uv_index"></div>
 
+                        </div>
+
+                        <br>
+
+                        <div>
+                            <h5>5 day history</h5>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
+
+        <!-- jQuery, javascript file for the Bootstrap's javascript file to function -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <!-- Bootstrap's javascript file that allows the dropdown menu to work  -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+
+        <script type="text/javascript">
+
+
+            // This is my API key
+            var APIKey = "7fad945469bd442472c51b8a3ff0e8d5";
+
+            // Here we are building the URL we need to query the database
+            var queryURL = "https://api.openweathermap.org/data/2.5/weather?" +
+                "q=Bujumbura,Burundi&units=imperial&appid=" + APIKey;
+
+            // Here we run our AJAX call to the OpenWeatherMap API
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            })
+                // We store all of the retrieved data inside of an object called "response"
+                .then(function (response) {
+
+                    // Log the queryURL
+                    console.log(queryURL);
+
+                    // Log the resulting object
+                    console.log(response);
+
+                    //Get todays date
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1;
+                    var yyyy = today.getFullYear();
+                    today = mm + '/' + dd + '/' + yyyy;
+                    console.log(today);
+
+
+                    // Transfer content to HTML
+                    $(".city_dt").html("<h1>" + response.name + "(" + today + ")</h4>");
+                    $(".temperature").text("Temperature (F) " + response.main.temp);
+                    $(".humidity").text("Humidity: " + response.main.humidity);
+                    $(".wind_speed").text("Wind Speed: " + response.wind.speed);
+                    $(".uv_index").text("UV Index: " + response.wind.speed);
+
+
+
+                    // Log the data in the console as well
+                    console.log("Temperature (F): " + response.main.temp);
+                    console.log("Humidity: " + response.main.humidity);
+                    console.log("Wind Speed: " + response.wind.speed);
+                    console.log("UV Index: " + response.wind.speed);
+
+                });
+
+
+        </script>
 </body>
 
 </html>
