@@ -73,6 +73,7 @@
                     <div class="card-body">
                         <div>
                             <div class="city_dt"> </div>
+                            <div class="weather_icon"> </div>
                             <div class="temperature"></div>
                             <div class="humidity"></div>
                             <div class="wind_speed"></div>
@@ -101,6 +102,9 @@
 
         <script type="text/javascript">
 
+            //variables to store lat & lon, will be used for UV Index call
+            var lat;
+            var lon;
 
             // This is my API key
             var APIKey = "7fad945469bd442472c51b8a3ff0e8d5";
@@ -133,19 +137,57 @@
 
 
                     // Transfer content to HTML
-                    $(".city_dt").html("<h1>" + response.name + "(" + today + ")</h4>");
-                    $(".temperature").text("Temperature (F) " + response.main.temp);
-                    $(".humidity").text("Humidity: " + response.main.humidity);
-                    $(".wind_speed").text("Wind Speed: " + response.wind.speed);
-                    $(".uv_index").text("UV Index: " + response.wind.speed);
+                    $(".city_dt").html("<h4>" + response.name + "(" + today + ")</h4>");
+                    
+                    //weather icon
+                    var weatherIcn = response.weather[0].icon;
 
+                    console.log("-------------icon: " + weatherIcn);
+                     $(".weather_icon").prepend('<img src="http://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
+                    //$(".city_dt").append('<img src="http://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
+                    
+                    $(".temperature").text("Temperature: " + response.main.temp + "F");
+                    $(".humidity").text("Humidity: " + response.main.humidity + "%");
+                    $(".wind_speed").text("Wind Speed: " + response.wind.speed + "MPH");
+
+                    lat = response.coord.lat;
+                    lon = response.coord.lon;
 
 
                     // Log the data in the console as well
                     console.log("Temperature (F): " + response.main.temp);
                     console.log("Humidity: " + response.main.humidity);
                     console.log("Wind Speed: " + response.wind.speed);
-                    console.log("UV Index: " + response.wind.speed);
+                    console.log("Lot: " +response.coord.lat);
+                    console.log("Lon: " + response.coord.lon);
+
+                });
+
+            //Second call for UV Index
+
+            // Here we are building the URL we need to query the database
+            var queryURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey +
+                "&lat=-3.38&lon=29.36";
+                // + lat + "&lon="+lon;
+            // Here we run our AJAX call to the OpenWeatherMap API
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            })
+                // We store all of the retrieved data inside of an object called "response"
+                .then(function (response) {
+
+                    // Log the queryURL
+                    console.log(queryURL);
+
+                    // Log the resulting object
+                    console.log(response);
+
+                    // Transfer content to HTML
+                    $(".uv_index").text("UV Index: " + response.value);
+
+                    // Log the data in the console as well
+                    console.log("UV Index: " + response.value);
 
                 });
 
