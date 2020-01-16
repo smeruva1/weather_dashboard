@@ -37,3 +37,7 @@ body {
     display: table;
   }
   
+  .fiveDayWeather {
+    background-color: lightblue;
+
+  }
