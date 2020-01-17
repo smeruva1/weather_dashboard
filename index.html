@@ -49,16 +49,7 @@
 
                             <div class="list-group">
                                 <!-- <button type="button" class="list-group-item list-group-item-action">
-                                    Cras justo odio
-                                </button>
-                                <button type="button" class="list-group-item list-group-item-action">Dapibus ac
-                                    facilisis in</button>
-                                <button type="button" class="list-group-item list-group-item-action">Morbi leo
-                                    risus</button>
-                                <button type="button" class="list-group-item list-group-item-action">Porta ac
-                                    consectetur ac</button>
-                                <button type="button" class="list-group-item list-group-item-action" disabled>Vestibulum
-                                    at eros</button> -->
+                                    Cras justo odio </button>  -->
                             </div>
                         </div>
                     </div>
@@ -107,40 +98,84 @@
                 var lat;
                 var lon;
 
+                //Define Array
+                // Initial array of City
+                var cityArray = ["London", "Chicago", "Paris", "New York", "Boston"];
+                localStorage.setItem('cityArray', JSON.stringify(cityArray));
+
                 // This is my API key
                 var APIKey = "7fad945469bd442472c51b8a3ff0e8d5";
 
+
+                // displayCityInfo function re-renders the HTML to display the appropriate content
+                function displayCityInfo() {
+
+                    console.log("^^^^^^^^inside displayCityInfo called when buttons are clicked ^^^^^^^");
+
+                    var city = $(this).attr("city-name");
+                    console.log(city);
+                    //call the current weather fun
+                    getCurrentWeather(APIKey, city);
+
+                }
+
+                // Function for displaying city data
+                function renderButtons() {
+
+                    console.log("^^^^^^^^inside renderButtons called onload and when you add new city ^^^^^^^");
+
+                    var restoreCity = JSON.parse(localStorage.getItem('cityArray'));
+                    console.log(restoreCity);
+                    // Deleting the city prior to adding new cities
+                    // (this is necessary otherwise you will have repeat buttons)
+                    $(".list-group").empty();
+
+                    // Looping through the array of city
+                    for (var i = 0; i < restoreCity.length; i++) {
+                        console.log("^^^^^^^^inside renderButtons for loop ^^^^^^^");
+                        console.log(restoreCity[i]);
+                        // Then dynamicaly generating buttons for each city in the array
+                        // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
+                        var a = $("<button>");
+                        console.log(a);
+                        // Adding a class of city-btn to our button
+                        a.addClass("city-btn");
+                        //a.attr("class", "list-group-item list-group-item-action");
+                        // Adding a data-attribute
+                        a.attr("city-name", restoreCity[i]);
+                        // Providing the initial button text
+                        a.text(restoreCity[i]);
+                        // Adding the button to the list-group div
+                        $(".list-group").append(a);
+                    }
+                }
+
+                //
                 $('.searchCity').on('submit', function (event) {
+
                     event.preventDefault();
+
+                    console.log("^^^^^^^^inside form submit ^^^^^^^");
+
+                    var restoreCity = JSON.parse(localStorage.getItem('cityArray'));
+
                     var input = $('#search-input').val();
                     console.log("@@@@@@@@@@@@@@@@@@@@@---------1----------");
                     console.log(input);
-                    localStorage.setItem("city1", input);
 
-                    $button1 = $("<button>");
-                    $button1.attr("class", "list-group-item list-group-item-action");
-                    $button1.attr("button-no", "1");
+                    // Adding movie from the textbox to our array
+                    restoreCity.push(input);
 
-                    var button1getval = localStorage.getItem("city1");
-                    console.log("what is in the local storage var city1: " + button1getval);
+                    localStorage.setItem('cityArray', JSON.stringify(restoreCity));
+                    renderButtons();
 
-                    // If events were retrieved from localStorage, update the text to it
-                    if (button1getval !== null) {
-                        console.log("looks like there is data in localstorage so reading it from there");
-                        $button1.text(button1getval);
-                    }
-
-                    $(".list-group").append($button1);
-
-
-
-                    getCurrentWeather(APIKey, input);
                 })
 
-                console.log("@@@@@@@@@@@@@@@@@@@@@---------2----------");
 
                 //Function to get Current data
                 function getCurrentWeather(APIKey, input) {
+
+                    console.log("^^^^^^^^inside getCurrentWeather ^^^^^^^");
 
                     //empty the divs, make place for new search
                     $(".city-dt").empty();
@@ -210,6 +245,7 @@
 
                 //Second call for UV Index
                 function getUVIndex(APIKey, coordinates) {
+
                     // Here we are building the URL we need to query the database
                     var queryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey +
                         "&lat=" + coordinates.lat + "&lon=" + coordinates.lon;
@@ -333,6 +369,14 @@
 
                         });
                 }
+
+                // Adding a click event listener to all elements with a class of "list-group"
+                $(document).on("click", ".city-btn", displayCityInfo);
+
+                // Calling the renderButtons function to display the initial buttons
+                renderButtons();
+
+
             </script>
 </body>
 
