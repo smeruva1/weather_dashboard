@@ -113,6 +113,8 @@
                 var queryURL = "https://api.openweathermap.org/data/2.5/weather?" +
                     "q=Bujumbura,Burundi&units=imperial&appid=" + APIKey;
 
+
+                //function getCurrentWeather(queryURL){
                 // Here we run our AJAX call to the OpenWeatherMap API
                 $.ajax({
                     url: queryURL,
@@ -143,8 +145,8 @@
                         var weatherIcn = response.weather[0].icon;
 
                         console.log("-------------icon: " + weatherIcn);
-                        $(".weather_icon").prepend('<img src="http://openweathermap.org/img/wn/' + weatherIcn + '.png"/>');
-                        //$(".city_dt").append('<img src="http://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
+                        $(".weather_icon").prepend('<img src="https://openweathermap.org/img/wn/' + weatherIcn + '.png"/>');
+                        //$(".city_dt").append('<img src="https://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
 
                         $(".temperature").text("Temperature: " + response.main.temp + "F");
                         $(".humidity").text("Humidity: " + response.main.humidity + "%");
@@ -166,7 +168,7 @@
                 //Second call for UV Index
 
                 // Here we are building the URL we need to query the database
-                var queryURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey +
+                var queryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey +
                     "&lat=-3.38&lon=29.36";
                 // + lat + "&lon="+lon;
                 // Here we run our AJAX call to the OpenWeatherMap API
@@ -193,7 +195,7 @@
 
                 // Third call for 5 day forecast
                 // Here we are building the URL we need to query the database
-                var queryURL = "http://api.openweathermap.org/data/2.5/forecast?appid=" + APIKey +
+                var queryURL = "https://api.openweathermap.org/data/2.5/forecast?appid=" + APIKey +
                     "&lat=-3.38&lon=29.36";
                 // + lat + "&lon="+lon;
                 // Here we run our AJAX call to the OpenWeatherMap API
@@ -259,9 +261,9 @@
                             var weatherIcn5Day = fiveDayArr[i].weather[0].icon;
 
                             console.log("------5day-------icon: " + weatherIcn5Day);
-                            // $(".weather_icon").prepend('<img src="http://openweathermap.org/img/wn/' + weatherIcn + '.png"/>');
-                            // //$(".city_dt").append('<img src="http://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
-                            fiveDayWeatherDiv.append('<img src="http://openweathermap.org/img/wn/' + weatherIcn5Day + '.png"/>');
+                            // $(".weather_icon").prepend('<img src="https://openweathermap.org/img/wn/' + weatherIcn + '.png"/>');
+                            // //$(".city_dt").append('<img src="https://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
+                            fiveDayWeatherDiv.append('<img src="https://openweathermap.org/img/wn/' + weatherIcn5Day + '.png"/>');
 
                             var fahrenheitTemp = ((fiveDayArr[i].main.temp - 273.15) * 1.8) + 32
 
