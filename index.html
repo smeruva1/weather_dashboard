@@ -48,7 +48,7 @@
                             <h5>Search History</h5>
 
                             <div class="list-group">
-                                <button type="button" class="list-group-item list-group-item-action">
+                                <!-- <button type="button" class="list-group-item list-group-item-action">
                                     Cras justo odio
                                 </button>
                                 <button type="button" class="list-group-item list-group-item-action">Dapibus ac
@@ -58,7 +58,7 @@
                                 <button type="button" class="list-group-item list-group-item-action">Porta ac
                                     consectetur ac</button>
                                 <button type="button" class="list-group-item list-group-item-action" disabled>Vestibulum
-                                    at eros</button>
+                                    at eros</button> -->
                             </div>
                         </div>
                     </div>
@@ -69,6 +69,7 @@
             <div class="col-lg-8">
                 <div class="card p-4 m-1">
                     <div class="card-body">
+                        <h5><strong>Current Weather</strong></h5>
                         <!-- a Bootstrap row with columns -->
                         <div class="row">
                             <div class="city_dt col-lg-5"></div>
@@ -81,7 +82,7 @@
                     </div>
                     <br>
                     <div class="card-body">
-                        <h5>5 day history</h5>
+                        <h5><strong>5 day history</strong></h5>
                         <!-- Weather will Get Dumped Here -->
                         <div class="row" id="5day-Weather">
                             <!-- <div id="5day-Weather"></div> -->
@@ -114,6 +115,25 @@
                     var input = $('#search-input').val();
                     console.log("@@@@@@@@@@@@@@@@@@@@@---------1----------");
                     console.log(input);
+                    localStorage.setItem("city1", input);
+
+                    $button1 = $("<button>");
+                    $button1.attr("class", "list-group-item list-group-item-action");
+                    $button1.attr("button-no", "1");
+
+                    var button1getval = localStorage.getItem("city1");
+                    console.log("what is in the local storage var city1: " + button1getval);
+
+                    // If events were retrieved from localStorage, update the text to it
+                    if (button1getval !== null) {
+                        console.log("looks like there is data in localstorage so reading it from there");
+                        $button1.text(button1getval);
+                    }
+
+                    $(".list-group").append($button1);
+
+
+
                     getCurrentWeather(APIKey, input);
                 })
 
@@ -121,6 +141,15 @@
 
                 //Function to get Current data
                 function getCurrentWeather(APIKey, input) {
+
+                    //empty the divs, make place for new search
+                    $(".city-dt").empty();
+                    $(".weather_icon").empty();
+                    $(".temperature").empty();
+                    $(".humidity").empty();
+                    $(".wind_speed").empty();
+                    $("#5day-Weather").empty();
+
                     // Here we are building the URL we need to query the database
                     var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + input + "&units=imperial&appid=" + APIKey;
 
@@ -183,7 +212,7 @@
                 function getUVIndex(APIKey, coordinates) {
                     // Here we are building the URL we need to query the database
                     var queryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey +
-                        "&lat="+coordinates.lat+"&lon="+coordinates.lon;
+                        "&lat=" + coordinates.lat + "&lon=" + coordinates.lon;
                     // + lat + "&lon="+lon;
                     // Here we run our AJAX call to the OpenWeatherMap API
                     $.ajax({
@@ -214,7 +243,7 @@
                 function getFiveDay(APIKey, coordinates) {
                     // Here we are building the URL we need to query the database
                     var queryURL = "https://api.openweathermap.org/data/2.5/forecast?appid=" + APIKey +
-                    "&lat="+coordinates.lat+"&lon="+coordinates.lon;
+                        "&lat=" + coordinates.lat + "&lon=" + coordinates.lon;
                     // + lat + "&lon="+lon;
                     // Here we run our AJAX call to the OpenWeatherMap API
                     $.ajax({
