@@ -37,8 +37,8 @@
                         <div>
                             <h5>Search for a city:</h5>
                             <!-- The form -->
-                            <form class="searchCity" action="action_page.php">
-                                <input type="text" placeholder="City.." name="search">
+                            <form class="searchCity">
+                                <input id='search-input' type="text" placeholder="City.." name="search">
                                 <button type="submit"><i class="fa fa-search"></i></button>
                             </form>
 
@@ -109,182 +109,201 @@
                 // This is my API key
                 var APIKey = "7fad945469bd442472c51b8a3ff0e8d5";
 
-                // Here we are building the URL we need to query the database
-                var queryURL = "https://api.openweathermap.org/data/2.5/weather?" +
-                    "q=Bujumbura,Burundi&units=imperial&appid=" + APIKey;
-
-
-                //function getCurrentWeather(queryURL){
-                // Here we run our AJAX call to the OpenWeatherMap API
-                $.ajax({
-                    url: queryURL,
-                    method: "GET"
+                $('.searchCity').on('submit', function (event) {
+                    event.preventDefault();
+                    var input = $('#search-input').val();
+                    console.log("@@@@@@@@@@@@@@@@@@@@@---------1----------");
+                    console.log(input);
+                    getCurrentWeather(APIKey, input);
                 })
-                    // We store all of the retrieved data inside of an object called "response"
-                    .then(function (response) {
 
-                        // Log the queryURL
-                        console.log(queryURL);
+                console.log("@@@@@@@@@@@@@@@@@@@@@---------2----------");
 
-                        // Log the resulting object
-                        console.log(response);
+                //Function to get Current data
+                function getCurrentWeather(APIKey, input) {
+                    // Here we are building the URL we need to query the database
+                    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + input + "&units=imperial&appid=" + APIKey;
 
-                        //Get todays date
-                        var today = new Date();
-                        var dd = today.getDate();
-                        var mm = today.getMonth() + 1;
-                        var yyyy = today.getFullYear();
-                        today = mm + '/' + dd + '/' + yyyy;
-                        console.log(today);
+                    // Here we run our AJAX call to the OpenWeatherMap API
+                    $.ajax({
+                        url: queryURL,
+                        method: "GET"
+                    })
+                        // We store all of the retrieved data inside of an object called "response"
+                        .then(function (response) {
 
+                            // Log the queryURL
+                            console.log(queryURL);
 
-                        // Transfer content to HTML
-                        $(".city_dt").html("<h4>" + response.name + "(" + today + ")</h4>");
+                            // Log the resulting object
+                            console.log(response);
 
-                        //weather icon
-                        var weatherIcn = response.weather[0].icon;
-
-                        console.log("-------------icon: " + weatherIcn);
-                        $(".weather_icon").prepend('<img src="https://openweathermap.org/img/wn/' + weatherIcn + '.png"/>');
-                        //$(".city_dt").append('<img src="https://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
-
-                        $(".temperature").text("Temperature: " + response.main.temp + "F");
-                        $(".humidity").text("Humidity: " + response.main.humidity + "%");
-                        $(".wind_speed").text("Wind Speed: " + response.wind.speed + "MPH");
-
-                        lat = response.coord.lat;
-                        lon = response.coord.lon;
+                            //Get todays date
+                            var today = new Date();
+                            var dd = today.getDate();
+                            var mm = today.getMonth() + 1;
+                            var yyyy = today.getFullYear();
+                            today = mm + '/' + dd + '/' + yyyy;
+                            console.log(today);
 
 
-                        // Log the data in the console as well
-                        console.log("Temperature (F): " + response.main.temp);
-                        console.log("Humidity: " + response.main.humidity);
-                        console.log("Wind Speed: " + response.wind.speed);
-                        console.log("Lot: " + response.coord.lat);
-                        console.log("Lon: " + response.coord.lon);
+                            // Transfer content to HTML
+                            $(".city_dt").html("<h4>" + response.name + "(" + today + ")</h4>");
 
-                    });
+                            //weather icon
+                            var weatherIcn = response.weather[0].icon;
+
+                            console.log("-------------icon: " + weatherIcn);
+                            $(".weather_icon").prepend('<img src="https://openweathermap.org/img/wn/' + weatherIcn + '.png"/>');
+                            //$(".city_dt").append('<img src="https://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
+
+                            $(".temperature").text("Temperature: " + response.main.temp + "F");
+                            $(".humidity").text("Humidity: " + response.main.humidity + "%");
+                            $(".wind_speed").text("Wind Speed: " + response.wind.speed + "MPH");
+
+                            var coordinates = response.coord;
+
+
+                            // Log the data in the console as well
+                            console.log("Temperature (F): " + response.main.temp);
+                            console.log("Humidity: " + response.main.humidity);
+                            console.log("Wind Speed: " + response.wind.speed);
+                            console.log("Lot: " + response.coord.lat);
+                            console.log("Lon: " + response.coord.lon);
+                            getUVIndex(APIKey, coordinates);
+                            getFiveDay(APIKey, coordinates);
+
+                        });
+
+
+
+                }
 
                 //Second call for UV Index
+                function getUVIndex(APIKey, coordinates) {
+                    // Here we are building the URL we need to query the database
+                    var queryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey +
+                        "&lat="+coordinates.lat+"&lon="+coordinates.lon;
+                    // + lat + "&lon="+lon;
+                    // Here we run our AJAX call to the OpenWeatherMap API
+                    $.ajax({
+                        url: queryURL,
+                        method: "GET"
+                    })
+                        // We store all of the retrieved data inside of an object called "response"
+                        .then(function (response) {
 
-                // Here we are building the URL we need to query the database
-                var queryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey +
-                    "&lat=-3.38&lon=29.36";
-                // + lat + "&lon="+lon;
-                // Here we run our AJAX call to the OpenWeatherMap API
-                $.ajax({
-                    url: queryURL,
-                    method: "GET"
-                })
-                    // We store all of the retrieved data inside of an object called "response"
-                    .then(function (response) {
+                            // Log the queryURL
+                            console.log(queryURL);
 
-                        // Log the queryURL
-                        console.log(queryURL);
+                            // Log the resulting object
+                            console.log(response);
 
-                        // Log the resulting object
-                        console.log(response);
+                            // Transfer content to HTML
+                            $(".uv_index").text("UV Index: " + response.value);
 
-                        // Transfer content to HTML
-                        $(".uv_index").text("UV Index: " + response.value);
+                            // Log the data in the console as well
+                            console.log("UV Index: " + response.value);
 
-                        // Log the data in the console as well
-                        console.log("UV Index: " + response.value);
+                        });
 
-                    });
+                }
+
 
                 // Third call for 5 day forecast
-                // Here we are building the URL we need to query the database
-                var queryURL = "https://api.openweathermap.org/data/2.5/forecast?appid=" + APIKey +
-                    "&lat=-3.38&lon=29.36";
-                // + lat + "&lon="+lon;
-                // Here we run our AJAX call to the OpenWeatherMap API
-                $.ajax({
-                    url: queryURL,
-                    method: "GET"
-                })
-                    // We store all of the retrieved data inside of an object called "response"
-                    .then(function (weatherResponse) {
+                function getFiveDay(APIKey, coordinates) {
+                    // Here we are building the URL we need to query the database
+                    var queryURL = "https://api.openweathermap.org/data/2.5/forecast?appid=" + APIKey +
+                    "&lat="+coordinates.lat+"&lon="+coordinates.lon;
+                    // + lat + "&lon="+lon;
+                    // Here we run our AJAX call to the OpenWeatherMap API
+                    $.ajax({
+                        url: queryURL,
+                        method: "GET"
+                    })
+                        // We store all of the retrieved data inside of an object called "response"
+                        .then(function (weatherResponse) {
 
-                        // Log the resulting object
-                        console.log(weatherResponse);
-                        console.log("##################################");
-                        console.log(weatherResponse.list[0].temp);
-                        console.log("##################################");
-                        console.log(weatherResponse.list[0]);
+                            // Log the resulting object
+                            console.log(weatherResponse);
+                            console.log("##################################");
+                            console.log(weatherResponse.list[0].temp);
+                            console.log("##################################");
+                            console.log(weatherResponse.list[0]);
 
-                        var fiveDayArr = weatherResponse.list.filter(function (weatherObj) {
-                            if (weatherObj.dt_txt.includes('06:00:00')) {
-                                return true;
-                            }
-                            else {
-                                return false;
+                            var fiveDayArr = weatherResponse.list.filter(function (weatherObj) {
+                                if (weatherObj.dt_txt.includes('06:00:00')) {
+                                    return true;
+                                }
+                                else {
+                                    return false;
+                                }
+
+                            });
+                            console.log("###############------ooooooooooo-------###################");
+                            console.log(fiveDayArr);
+
+                            //Looping through Array to add 5 days
+                            for (var i = 0; i < 5; i++) {
+
+                                // Creating a div to hold the movie
+                                var fiveDayWeatherDiv = $("<div class='fiveDayWeather'>");
+
+
+                                //let unix_timestamp = 1579240800;
+                                let unix_timestamp = fiveDayArr[i].dt;
+                                // Create a new JavaScript Date object based on the timestamp
+                                // multiplied by 1000 so that the argument is in milliseconds, not seconds.
+                                var date = new Date(unix_timestamp * 1000);
+                                // // Hours part from the timestamp
+                                // var hours = date.getHours();
+                                // // Minutes part from the timestamp
+                                // var minutes = "0" + date.getMinutes();
+                                // // Seconds part from the timestamp
+                                // var seconds = "0" + date.getSeconds();
+
+                                // Will display time in 10:30:23 format
+                                // var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                                console.log("###############-----$$$$--------###################");
+                                //console.log(date);
+                                moment(date).format('MM/DD/YYYY');
+                                //console.log(date);
+                                console.log(moment(date).format('MM/DD/YYYY'));
+                                // console.log(formattedTime);
+
+                                var fiveDayDt = $("<p>").text(moment(date).format('MM/DD/YYYY'));
+                                // Displaying the rating
+                                fiveDayWeatherDiv.append(fiveDayDt);
+
+                                //weather icon
+                                var weatherIcn5Day = fiveDayArr[i].weather[0].icon;
+
+                                console.log("------5day-------icon: " + weatherIcn5Day);
+                                // $(".weather_icon").prepend('<img src="https://openweathermap.org/img/wn/' + weatherIcn + '.png"/>');
+                                // //$(".city_dt").append('<img src="https://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
+                                fiveDayWeatherDiv.append('<img src="https://openweathermap.org/img/wn/' + weatherIcn5Day + '.png"/>');
+
+                                var fahrenheitTemp = ((fiveDayArr[i].main.temp - 273.15) * 1.8) + 32
+
+                                var fiveDayTemp = $("<p>").text("Temp: " + fahrenheitTemp.toFixed(2) + "F");
+                                console.log("*************************" + fahrenheitTemp.toFixed(2));
+                                // Displaying the Temp
+                                fiveDayWeatherDiv.append(fiveDayTemp);
+
+
+                                var fiveDayHumidity = $("<p>").text("Humidity: " + fiveDayArr[i].main.humidity + "%");
+                                console.log("*************************" + fiveDayHumidity);
+                                // Displaying the Humidity
+                                fiveDayWeatherDiv.append(fiveDayHumidity);
+
+                                //fiveDayWeatherDiv.attr("class", "col-lg-2");
+                                // Putting the entire movie above the previous movies
+                                $("#5day-Weather").append(fiveDayWeatherDiv);
+                                //$("#5day-Weather").attr("class", "col-lg-3");
                             }
 
                         });
-                        console.log("###############------ooooooooooo-------###################");
-                        console.log(fiveDayArr);
-
-                        //Looping through Array to add 5 days
-                        for (var i = 0; i < 5; i++) {
-
-                            // Creating a div to hold the movie
-                            var fiveDayWeatherDiv = $("<div class='fiveDayWeather'>");
-
-
-                            //let unix_timestamp = 1579240800;
-                            let unix_timestamp = fiveDayArr[i].dt;
-                            // Create a new JavaScript Date object based on the timestamp
-                            // multiplied by 1000 so that the argument is in milliseconds, not seconds.
-                            var date = new Date(unix_timestamp * 1000);
-                            // // Hours part from the timestamp
-                            // var hours = date.getHours();
-                            // // Minutes part from the timestamp
-                            // var minutes = "0" + date.getMinutes();
-                            // // Seconds part from the timestamp
-                            // var seconds = "0" + date.getSeconds();
-
-                            // Will display time in 10:30:23 format
-                            // var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                            console.log("###############-----$$$$--------###################");
-                            //console.log(date);
-                            moment(date).format('MM/DD/YYYY');
-                            //console.log(date);
-                            console.log(moment(date).format('MM/DD/YYYY'));
-                            // console.log(formattedTime);
-
-                            var fiveDayDt = $("<p>").text(moment(date).format('MM/DD/YYYY'));
-                            // Displaying the rating
-                            fiveDayWeatherDiv.append(fiveDayDt);
-
-                            //weather icon
-                            var weatherIcn5Day = fiveDayArr[i].weather[0].icon;
-
-                            console.log("------5day-------icon: " + weatherIcn5Day);
-                            // $(".weather_icon").prepend('<img src="https://openweathermap.org/img/wn/' + weatherIcn + '.png"/>');
-                            // //$(".city_dt").append('<img src="https://openweathermap.org/img/wn/'+weatherIcn+ '.png"/>');
-                            fiveDayWeatherDiv.append('<img src="https://openweathermap.org/img/wn/' + weatherIcn5Day + '.png"/>');
-
-                            var fahrenheitTemp = ((fiveDayArr[i].main.temp - 273.15) * 1.8) + 32
-
-                            var fiveDayTemp = $("<p>").text("Temp: " + fahrenheitTemp.toFixed(2) + "F");
-                            console.log("*************************" + fahrenheitTemp.toFixed(2));
-                            // Displaying the Temp
-                            fiveDayWeatherDiv.append(fiveDayTemp);
-
-
-                            var fiveDayHumidity = $("<p>").text("Humidity: " + fiveDayArr[i].main.humidity + "%");
-                            console.log("*************************" + fiveDayHumidity);
-                            // Displaying the Humidity
-                            fiveDayWeatherDiv.append(fiveDayHumidity);
-
-                            //fiveDayWeatherDiv.attr("class", "col-lg-2");
-                            // Putting the entire movie above the previous movies
-                            $("#5day-Weather").append(fiveDayWeatherDiv);
-                            //$("#5day-Weather").attr("class", "col-lg-3");
-                        }
-
-                    });
+                }
             </script>
 </body>
 
